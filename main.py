@@ -19,7 +19,7 @@ plt.rcParams.update({'font.size': 15})
 st.header('Model hyperparams')
 #batch_size = st.number_input('Batch size',value=5, step=1)
 #n_frames_skip = st.number_input('Number of frames to skip', value=6, step=1)
-reset_buffer_every_n_seconds = st.number_input('Reset buffer every N batches',value=3, step=1)
+reset_buffer_every_n_seconds = st.number_input('Reset buffer every N seconds',value=3, step=1)
 
 
 
