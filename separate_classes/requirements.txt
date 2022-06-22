@@ -1,0 +1,10 @@
+detectron2.egg==info
+matplotlib==3.5.2
+MoViNet_pytorch==0.2.2
+numpy==1.22.3
+opencv_python==4.5.5.64
+pandas==1.4.2
+pytorchvideo==0.1.5
+seaborn==0.11.2
+torch==1.11.0
+torchvision==0.12.0
