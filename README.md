@@ -3,7 +3,9 @@ A streamlit app that receives an mp4 file and returns the class
 
 
 To install:
+
 clone repo
+
 create conda env with python 3.9
 
 
