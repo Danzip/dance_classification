@@ -144,4 +144,4 @@ dependencies:
     - widgetsnbextension==3.6.0
     - yacs==0.1.8
     - zipp==3.8.0
-prefix: /home/ubuntu/anaconda3/envs/mine
+prefix: /home/ubuntu/anaconda3/envs/lightricks_env
