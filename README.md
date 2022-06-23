@@ -7,7 +7,10 @@ To install:
 clone repo
 
 create conda env with python 3.9
-
+```
+conda create -n myenv python=3.9
+conda activate myenv
+```
 
 ```
 cd Lightricks_all_video
