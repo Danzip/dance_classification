@@ -1,4 +1,4 @@
-name: mine
+name: lightricks_env
 channels:
   - conda-forge
   - intel
