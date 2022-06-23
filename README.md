@@ -8,8 +8,8 @@ clone repo
 
 create conda env with python 3.9
 ```
-conda create -n myenv python=3.9
-conda activate myenv
+conda create -n movinet_streamlit python=3.9
+conda activate movinet_streamlit
 ```
 
 ```
