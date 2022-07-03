@@ -11,19 +11,24 @@ import os
 
 
 class ModelInference:
-    def __init__(self,batch_size=10, top_n=5, n_frames_skip=6, reset_buffer_every_n_batches=3,return_df=False, show_plot=False,savefig=False) -> None:
+    def __init__(self,batch_size=10, top_n=5, n_frames_skip=6, reset_buffer_every_n_batches=3,return_df=False, show_plot=False,savefig=False, label_granularity=1) -> None:
         self.model = mn(_C.MODEL.MoViNetA0, causal = True, pretrained = True).eval()
         self.batch_size = batch_size
         self.top_n = top_n
         self.n_frames_skip = n_frames_skip
         self.reset_buffer_every_n_batches = reset_buffer_every_n_batches
-        with open(os.path.join(os.getcwd(),'separate_classes','CONV_MATIX.pkl'), 'rb') as f:
-            self.CONV_MATIX = pickle.load(f)
-        with open(os.path.join(os.getcwd(),'separate_classes','k600_reduced_labels.pkl'), 'rb') as f:
-            self.D1 = pickle.load(f)
+        if label_granularity == 1:
+            with open(os.path.join(os.getcwd(),'separate_classes','CONV_MATIX.pkl'), 'rb') as f:
+                self.CONV_MATIX = pickle.load(f)
+            with open(os.path.join(os.getcwd(),'separate_classes','k600_reduced_labels.pkl'), 'rb') as f:
+                self.D1 = pickle.load(f)
+        elif label_granularity == 2:
+            with open(os.path.join(os.getcwd(),'separate_classes','CONV_MATIX2.pkl'), 'rb') as f:
+                self.CONV_MATIX = pickle.load(f)
+            with open(os.path.join(os.getcwd(),'separate_classes','k600_reduced_labels2.pkl'), 'rb') as f:
+                self.D1 = pickle.load(f)
         self.class_id_dict = pd.DataFrame(self.D1.keys()).to_dict()[0]
-        # with open('k600_all.pkl', 'rb') as f:
-        #     self.D1 = pickle.load(f)
+
     def get_preds(self,video,fps):
           #loading data and subsampling
         
