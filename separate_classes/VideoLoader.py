@@ -118,6 +118,14 @@ class VideoLoader:
             out[:,i,:,:] = torch.Tensor(padded_frame.transpose(2,0,1))/255.
 
         return out
+    
+    def merge_2_videos(self, path1, path2):
+        vid1, fps1 = self.load_video_for_classification(path1)
+        vid2, fps2 = self.load_video_for_classification(path2)
+        vid1 = vid1[:, ::int(fps1/5), :, :]
+        vid2 = vid2[:, ::int(fps2/5), :, :]
+    
+        return torch.cat([vid1, vid2], dim=1), 5
 
 
     
