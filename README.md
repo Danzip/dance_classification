@@ -19,3 +19,6 @@ To run:
 ```
 streamlit run main.py
 ```
+
+
+![alt text](https://github.com/bf2harven/Lightricks_all_video/main/probs.png?raw=true)
