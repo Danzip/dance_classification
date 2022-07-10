@@ -6,7 +6,7 @@ The tasks were:
 - Strech goal 1 - Classify subsequent actions in a video of arbitrary length.
 - Strech goal 2 - Classify multiple subsequent actions in a video of arbitrary length. (Another repo)
 
-** The solutions must be lightweight and run at realtime or better. **
+**The solutions must be lightweight and run at realtime or better.**
 
 We chose to compare models by their performance on [kinetics 600](https://www.deepmind.com/open-source/kinetics "kinetics 600"). 
 We ended up using the [pytorch implementation](https://github.com/Atze00/MoViNet-pytorch "pytorch implementation") of [MoViNets](https://arxiv.org/pdf/2103.11511.pdf "MoViNets").
