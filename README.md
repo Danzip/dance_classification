@@ -20,6 +20,6 @@ To run:
 streamlit run main.py
 ```
 
-![alt text](https://github.com/bf2harven/Lightricks_all_video/blob/main/stl_settings.png?raw=true)
+![alt text](https://github.com/bf2harven/Lightricks_all_video/blob/main/stl_setting.png?raw=true)
 
 ![alt text](https://github.com/bf2harven/Lightricks_all_video/blob/main/probs.png?raw=true)
