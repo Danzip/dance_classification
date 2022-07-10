@@ -1,5 +1,6 @@
 # Introduction
-This work was done in an internship at Lightricks.
+This work was done in an internship at Lightricks in collaboration with YDATA.
+It was selected as the best out of 15 other industry internships.
 
 The tasks were:
 - Basic - Classify action in a video of arbitrary length.
