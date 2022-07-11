@@ -34,8 +34,8 @@ streamlit run main.py
 
 ## In the webapp:
 
-- You can select the granularity of the classification. (How many classes) \
-- You can select a file to run inference on.\
+- You can select the granularity of the classification. (How many classes) 
+- You can select a file to run inference on.
 - You can select how often the buffer is resetted. \
 If this is too short - there's not enough information to make a good classification.\
 If this is too long - There will be a lag in detection of new actions. Can even miss short actions. 
