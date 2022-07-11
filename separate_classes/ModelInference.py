@@ -12,6 +12,21 @@ import os
 
 class ModelInference:
     def __init__(self,batch_size=10, top_n=5, n_frames_skip=6, reset_buffer_every_n_batches=3,return_df=False, show_plot=False,savefig=False, label_granularity=1) -> None:
+        """
+        Initializes model that loads a video file, and returns a list of the top n most likely labels for the video
+        
+        :param batch_size: The number of frames to be processed at a time, defaults to 10 (optional)
+        :param top_n: the number of top predictions to return, defaults to 5 (optional)
+        :param n_frames_skip: number of frames to skip between predictions, defaults to 6 (optional)
+        :param reset_buffer_every_n_batches: This is the number of batches that the model will process
+        before resetting the buffer, defaults to 3 (optional)
+        :param return_df: If True, returns a pandas dataframe with the predictions. If False, returns a
+        dictionary with the predictions, defaults to False (optional)
+        :param show_plot: If True, will show a plot of the predictions, defaults to False (optional)
+        :param savefig: If True, saves the plot of the predictions, defaults to False (optional)
+        :param label_granularity: 1 or 2. 1 is the default, and it's the more granular of the two, defaults
+        to 1 (optional)
+        """
         self.model = mn(_C.MODEL.MoViNetA0, causal = True, pretrained = True).eval()
         self.batch_size = batch_size
         self.top_n = top_n
@@ -30,6 +45,14 @@ class ModelInference:
         self.class_id_dict = pd.DataFrame(self.D1.keys()).to_dict()[0]
 
     def get_preds(self,video,fps):
+        """
+        This function is used when tracking. It takes a video and returns a list of the top n most likely labels for the video
+        The function then reduces the labels by multiplting by a conversion matrix.
+                
+        :param video: the video to be processed
+        :param fps: frames per second of the video
+        :return: Vector with merged logits of the model.
+        """
           #loading data and subsampling
         
         inputs = video[:,::self.n_frames_skip,:,:]
@@ -48,11 +71,11 @@ class ModelInference:
             output = output @ self.CONV_MATIX
             return output.numpy().flatten()
   
-            print(os.getcwd())
+            
     def analyse_vid(self, video, fps, return_df=False, show_plot=False,return_fig=True):
         """
         It takes a video path, loads the video, subsamples it, runs it through the model, and plots the top n
-        predictions
+        predictions, also can plot the predictions in a lineplot.
         
         :param video_path: path to the video file
         :param batch_size: The number of frames to be processed in per batch, defaults to 10 (optional)

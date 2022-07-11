@@ -16,6 +16,16 @@ class Tracker:
                            'person_id', 'x0', 'y0', 'width', 'height']
 
     def impute_bboxes(self, df, person_id=1, n_frames=300, smooth_window=10):
+        """
+        Takes a dataframe of bounding boxes, and for each person, it imputes the missing bounding
+        boxes by taking a rolling average of the bounding boxes
+        
+        :param df: the dataframe containing the bounding boxes
+        :param person_id: the person you want to impute, defaults to 1 (optional)
+        :param n_frames: the number of frames in the video, defaults to 300 (optional)
+        :param smooth_window: the number of frames to smooth over, defaults to 10 (optional)
+        :return: A dataframe with the imputed bounding boxes.
+        """
         df0 = pd.DataFrame({'frame_number': range(n_frames)})
         df1 = df[df.person_id == person_id]
         df1.loc[:, 'rolling_x0'] = df1.x0.rolling(
@@ -33,6 +43,16 @@ class Tracker:
         return df0.astype(int)
 
     def create_person_subclip(self, video, df_smooth, aspect_ratio_max=1):
+        """
+        It takes a video and a dataframe of bounding boxes and returns a list of frames with the person
+        centered in the frame.
+        
+        :param video: the video file
+        :param df_smooth: a dataframe with the following columns:
+        :param aspect_ratio_max: The maximum aspect ratio of the person's bounding box, defaults to 1
+        (optional)
+        :return: A list of frames
+        """
         frames_out = []
         width = df_smooth.rolling_width.median().astype(int)
         height = df_smooth.rolling_height.median().astype(int)
@@ -52,15 +72,8 @@ class Tracker:
                 y0 = Y - int(height//2)
             x1 = X + width
             y1 = Y + height
-            # frames_out.append(video[frame_number,:,:,:][y0:y1,x0:x1,:])
-            # plt.imshow(video[frame_number,:,:,:][y0:y1,x0:x1,:])
-            # plt.show()
             frame = video[frame_number, y0:y1, x0:x1, :]
-            # print(frame.shape)
             frame = cv2.resize((frame/255.).astype('float32'), (172, 172))
-            # print(frame.shape)
-
             frames_out.append(frame[:, :, ::-1])
 
         return frames_out
-        # return torch.Tensor(np.array(frames_out)).permute(3, 0, 1, 2)
