@@ -23,7 +23,7 @@ st.header('Model hyperparams')
 # reset_buffer_every_n_seconds = st.number_input('Reset buffer every N seconds',value=3, step=1)
 # label_granularity = st.number_input('Select granularity',value=, step=1)
 
-label_granularity = st.radio('Select granularity,1 - 600 classes', [1], index=0)
+label_granularity = st.radio('Select granularity,1 - 600 classes, 2 - 5 dances 3 - 18 dances', [1, 2, 3], index=0)
 model_id = st.radio('Select model,a0 - a5', ["a0", "a1", "a2", "a3", "a4", "a5"], index=0)
 upload_bool = st.radio('Upload or read local video',
                        ['Upload', 'Read file from disk', 'Merge multiple videos (STRECH GOAL!)'], index=0)

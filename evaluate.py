@@ -15,17 +15,7 @@ from tqdm import tqdm
 import os
 import torchvision.transforms as transforms
 
-SEPERATE_CLASSES = "separate_classes"
-SHORT_DANCES_CSV = os.path.join(SEPERATE_CLASSES, 'short_dances.csv')
-LONG_DANCES_CSV = os.path.join(SEPERATE_CLASSES, 'long_dances.csv')
-KINETICS_600_CSV = os.path.join(SEPERATE_CLASSES, "kineticks600_classes")
-CLASS_NUM = "class_num"
-CLASS_LABEL = "class_label"
-NUM_FRAMES = 8
-model_id = "a0"
-RESOLUTION = 224
-OUTPUT_SIZE = (RESOLUTION, RESOLUTION)
-BATCH_SIZE = 8
+from utils import NUM_FRAMES, OUTPUT_SIZE
 
 
 def get_class_name_from_path(path, label_map):
@@ -123,7 +113,7 @@ def frames_from_video_file(video_path, n_frames, output_size=OUTPUT_SIZE, frame_
 
 
 class MoviNet:
-    def __init__(self, model_id,n_clip_frames = NUM_FRAMES):
+    def __init__(self, model_id, n_clip_frames =NUM_FRAMES):
         """
         :param model_id: movinets model_id valid values are a0-a5
         """
@@ -154,7 +144,6 @@ class MoviNet:
         with torch.no_grad():
             self.model.clean_activation_buffers()
             output = F.softmax(self.model(inputs), dim=1)
-            output = output @ self.CONV_MATIX
             return output.numpy().flatten()
 
     def infer_on_dir(self, video_dir, ext="mp4", batch_size=8, output_size=OUTPUT_SIZE, n_frames=NUM_FRAMES,
