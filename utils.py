@@ -48,10 +48,13 @@ def get_label_map(wanted_classes_path, kinetics_600_path):
             label_map[index] = wanted_class
         except ValueError:
             print(f"Class {wanted_class} not found in {kinetics_600_path}")
+    return label_map
 
 
-def read_labels_from_csv(wanted_classes_path):
-    return pd.read_csv(wanted_classes_path)["name"].tolist()
+def read_labels_from_csv(classes_path):
+    labels = pd.read_csv(classes_path).iloc[:, -1].tolist()
+    labels = [label.strip() for label in labels]
+    return labels
 
 
 def find_class_index(class_name, class_list):
@@ -73,5 +76,5 @@ def load_kinetics(kinetics_path=KINETICS_PATH):
         df.to_csv(kinetics_path)
     else:
         df = pd.read_csv(kinetics_path)
-
-    return df
+    dict_out = {idx: label for idx, label in enumerate(df.iloc[:, -1])}
+    return dict_out

@@ -1,5 +1,6 @@
 import sys
 
+import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
@@ -8,6 +9,7 @@ import seaborn as sns
 from io import StringIO
 import streamlit as st
 
+from separate_classes.VideoLoader import VideoLoader
 from utils import load_movinet_model, load_kinetics, KINETICS_PATH, get_label_map, DANCES_PATH_5, DANCES_PATH_18
 
 
@@ -31,17 +33,16 @@ class ModelInference:
         """
         self.load_model_print_logs(model_id)
         if label_granularity == 1:
-            self.D1 = load_kinetics(kinetics_path)
+            self.classes_dict = get_label_map(kinetics_path, kinetics_path)
         if label_granularity == 2:
-            self.D1 = get_label_map(DANCES_PATH_5, kinetics_path)
+            self.classes_dict = get_label_map(DANCES_PATH_5, kinetics_path)
         if label_granularity == 3:
-            self.D1 = get_label_map(DANCES_PATH_18, kinetics_path)
+            self.classes_dict = get_label_map(DANCES_PATH_18, kinetics_path)
 
         self.batch_size = batch_size
         self.top_n = top_n
         self.n_frames_skip = n_frames_skip
         self.reset_buffer_every_n_batches = reset_buffer_every_n_batches
-        self.class_id_dict = pd.DataFrame(self.D1.keys()).to_dict()[0]
 
     def load_model_print_logs(self, model_id):
         # Create a StringIO object to capture the log output
@@ -64,33 +65,12 @@ class ModelInference:
         for line in log_lines:
             st.write(line)
 
-    def get_preds(self, video, fps):
-        """
-        This function is used when tracking. It takes a video and returns a list of the top n most likely labels for the video
-        The function then reduces the labels by multiplting by a conversion matrix.
-                
-        :param video: the video to be processed
-        :param fps: frames per second of the video
-        :return: Vector with merged logits of the model.
-        """
-        # loading data and subsampling
+    def choose_relevant_classes(self, predictions):
+        class_indexes = list(self.classes_dict.keys())
+        relevant_predictions = predictions[:, class_indexes]
+        return relevant_predictions
 
-        inputs = video[:, ::self.n_frames_skip, :, :]
-        inputs = inputs[None, :]
-
-        # prealloc
-        seconds = 0
-        df = pd.DataFrame(self.D1.keys())
-        df.set_index(0, inplace=True)
-
-        # inference
-        self.model.clean_activation_buffers()
-        with torch.no_grad():
-            self.model.clean_activation_buffers()
-            output = F.softmax(self.model(inputs), dim=1)
-            return output.numpy().flatten()
-
-    def analyse_vid(self, video, fps, return_df=False, show_plot=False, return_fig=True):
+    def analyse_vid(self, video, fps, return_df=False, show_plot=False):
         """
         It takes a video path, loads the video, subsamples it, runs it through the model, and plots the top n
         predictions, also can plot the predictions in a lineplot.
@@ -111,7 +91,7 @@ class ModelInference:
 
         # prealloc
         seconds = 0
-        df = pd.DataFrame(self.D1.keys())
+        df = pd.DataFrame(self.classes_dict.keys())
         df.set_index(0, inplace=True)
 
         # inference
@@ -120,8 +100,7 @@ class ModelInference:
             for batch in range(inputs.shape[2] // self.batch_size):
                 if batch % self.reset_buffer_every_n_batches == 0:
                     self.model.clean_activation_buffers()
-                output = F.softmax(
-                    self.model(inputs[:, :, self.batch_size * batch:self.batch_size * (1 + batch), :, :]), dim=1)
+                output = self.calculate_class_predictions(batch, inputs)
                 df[str(seconds)] = output.numpy().flatten()
                 seconds += int(self.batch_size * self.n_frames_skip / fps)
         # plotting
@@ -130,20 +109,23 @@ class ModelInference:
         df = df.T.reset_index().melt('index', var_name='cols', value_name='Probabilities')
 
         df['index'] = df['index'].astype(int)
-        if show_plot:
-            g = sns.catplot(x="index", y="Probabilities", hue='cols', data=df, kind='point', legend=False)
-            plt.xlabel('Time in seconds')
-            plt.legend()
-            # plt.gca().xaxis.set_major_locator(plt.MaxNLocator(min(10,seconds)))
-            # plt.ylim(0,1.1)
 
         if return_df:
             return df
 
-        if return_fig:
-            return g
+    def calculate_class_predictions(self, batch, inputs):
+        predictions = self.model(inputs[:, :, self.batch_size * batch:self.batch_size * (1 + batch), :, :])
+        predictions = self.choose_relevant_classes(predictions)
+        predictions /= torch.max(predictions)  # normalize
+        output = F.softmax(predictions, dim=1)
+        return output
 
 
 if __name__ == "__main__":
-    model_infer = ModelInference(model_id="a5")
+    model_infer = ModelInference(label_granularity=2, model_id="a5")
+    loader = VideoLoader()
+    fname = "/media/gentex/6AC5-31BF/kineticks_dances/train/belly_dancing/0EezE5Yljg.mp4"
+    video, fps = loader.load_video_for_classification(fname)
+
+    model_infer.analyse_vid(video, fps)
     print(model_infer)

@@ -51,7 +51,7 @@ def run_inference():
                            reset_buffer_every_n_batches=reset_buffer_every_n_seconds,
                            label_granularity=label_granularity)
         start = time.time()
-        df_out = m.analyse_vid(video, int(fps), return_df=True, show_plot=False, return_fig=False)
+        df_out = m.analyse_vid(video, int(fps), return_df=True, show_plot=False)
         end = time.time()
         st.header(f'Inference time: {end - start:.2f} seconds')
         st.write(f'Video length: {video.shape[1] / fps:.2f} seconds')
@@ -82,7 +82,7 @@ def run_inference():
                                reset_buffer_every_n_batches=reset_buffer_every_n_seconds,
                                label_granularity=label_granularity, model_id=model_id)
             start = time.time()
-            df_out = m.analyse_vid(video, int(fps), return_df=True, show_plot=False, return_fig=False)
+            df_out = m.analyse_vid(video, int(fps), return_df=True, show_plot=False)
             end = time.time()
             st.header(f'Inference time: {end - start:.2f} seconds')
             st.write(f'Video length: {video.shape[1] / fps:.2f} seconds')
@@ -112,7 +112,7 @@ def run_inference():
                            reset_buffer_every_n_batches=reset_buffer_every_n_seconds,
                            label_granularity=label_granularity)
         start = time.time()
-        df_out = m.analyse_vid(video, int(fps), return_df=True, show_plot=False, return_fig=False)
+        df_out = m.analyse_vid(video, int(fps), return_df=True, show_plot=False)
         end = time.time()
         st.header(f'Inference time: {end - start:.2f} seconds')
         st.write(f'Video length: {video.shape[1] / fps:.2f} seconds')
