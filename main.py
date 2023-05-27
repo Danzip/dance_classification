@@ -23,10 +23,11 @@ st.header('Model hyperparams')
 # reset_buffer_every_n_seconds = st.number_input('Reset buffer every N seconds',value=3, step=1)
 # label_granularity = st.number_input('Select granularity',value=, step=1)
 
-label_granularity = st.radio('Select granularity,1 - 600 classes, 2 - 5 dances 3 - 18 dances', [1, 2, 3], index=0)
+label_granularity = st.radio('Select Classes amount', ["600 kinetics classes", "5 dance classes", "18 dance classes"],
+                             index=0)
 model_id = st.radio('Select model,a0 - a5', ["a0", "a1", "a2", "a3", "a4", "a5"], index=0)
 upload_bool = st.radio('Upload or read local video',
-                       ['Upload', 'Read file from disk', 'Merge multiple videos (STRECH GOAL!)'], index=0)
+                       ['Upload', 'Read file from disk'], index=0)
 
 
 # st.write(label_granularity, type(label_granularity))
@@ -95,36 +96,6 @@ def run_inference():
             plt.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
             with col2:
                 st.pyplot(fig)
-    elif upload_bool == 'Merge multiple videos (STRECH GOAL!)':
-        col1, col2 = st.columns(2)
-        fname1 = file_selector(key=1)
-        fname2 = file_selector(key=2)
-        reset_buffer_every_n_seconds = st.number_input('Reset buffer every N seconds', value=50, step=1)
-
-        with col1:
-            st.video(fname1, format="video")
-        with col2:
-            st.video(fname2, format="video")
-        video, fps = loader.merge_2_videos(fname1, fname2)
-        batch_size = 5
-        n_frames_skip = round(fps / 5)
-        m = ModelInference(batch_size=batch_size, n_frames_skip=n_frames_skip,
-                           reset_buffer_every_n_batches=reset_buffer_every_n_seconds,
-                           label_granularity=label_granularity)
-        start = time.time()
-        df_out = m.analyse_vid(video, int(fps), return_df=True, show_plot=False)
-        end = time.time()
-        st.header(f'Inference time: {end - start:.2f} seconds')
-        st.write(f'Video length: {video.shape[1] / fps:.2f} seconds')
-        st.write(f'Time ratio: {(end - start) / (video.shape[1] / fps):.2f} seconds')
-        fig, ax = plt.subplots()
-        sns.lineplot(x='index', y="Probabilities", ax=ax, hue='cols', data=df_out, alpha=0.6, legend=False)
-        sns.scatterplot(x='index', y="Probabilities", ax=ax, hue='cols', data=df_out)
-        plt.xlabel('Time in seconds')
-        # plt.legend()
-        plt.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
-
-        st.pyplot(fig)
 
 
 def main():

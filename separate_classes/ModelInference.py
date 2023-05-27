@@ -12,6 +12,12 @@ import streamlit as st
 from separate_classes.VideoLoader import VideoLoader
 from utils import load_movinet_model, load_kinetics, KINETICS_PATH, get_label_map, DANCES_PATH_5, DANCES_PATH_18
 
+DANCE_CLASSES_18 = "18 dance classes"
+
+DANCE_CLASSES_5 = "5 dance classes"
+
+KINETICS_CLASSES_600 = "600 kinetics classes"
+
 
 class ModelInference:
     def __init__(self, batch_size=10, top_n=5, n_frames_skip=6, reset_buffer_every_n_batches=3, model_id="a0",
@@ -32,11 +38,11 @@ class ModelInference:
         to 1 (optional)
         """
         self.load_model_print_logs(model_id)
-        if label_granularity == 1:
+        if label_granularity == KINETICS_CLASSES:
             self.classes_dict = get_label_map(kinetics_path, kinetics_path)
-        if label_granularity == 2:
+        if label_granularity == DANCE_CLASSES:
             self.classes_dict = get_label_map(DANCES_PATH_5, kinetics_path)
-        if label_granularity == 3:
+        if label_granularity == DANCE_CLASSES_18:
             self.classes_dict = get_label_map(DANCES_PATH_18, kinetics_path)
 
         self.batch_size = batch_size
@@ -91,7 +97,7 @@ class ModelInference:
 
         # prealloc
         seconds = 0
-        df = pd.DataFrame(self.classes_dict.keys())
+        df = pd.DataFrame(self.classes_dict.values())
         df.set_index(0, inplace=True)
 
         # inference
@@ -122,7 +128,7 @@ class ModelInference:
 
 
 if __name__ == "__main__":
-    model_infer = ModelInference(label_granularity=2, model_id="a5")
+    model_infer = ModelInference(label_granularity="600 kinetics classes", model_id="a5")
     loader = VideoLoader()
     fname = "/media/gentex/6AC5-31BF/kineticks_dances/train/belly_dancing/0EezE5Yljg.mp4"
     video, fps = loader.load_video_for_classification(fname)

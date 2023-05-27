@@ -1,4 +1,4 @@
-name: lightricks_env
+name: dance_classification_env
 channels:
   - conda-forge
   - intel
@@ -144,4 +144,4 @@ dependencies:
     - widgetsnbextension==3.6.0
     - yacs==0.1.8
     - zipp==3.8.0
-prefix: /home/ubuntu/anaconda3/envs/lightricks_env
+prefix: /home/ubuntu/anaconda3/envs/dance_classification_env
