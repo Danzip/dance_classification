@@ -7,6 +7,11 @@ from movinets.config import _C
 
 KINETICS_CLASSES_CSV = "kinetics_600_classes.csv"
 
+DANCE_CLASSES_18 = "18 dance classes"
+KINETICS_CLASSES = "600 kinetics classes"
+DANCE_CLASSES_5 = "5 dance classes"
+KINETICS_CLASSES_600 = "600 kinetics classes"
+
 SEPERATE_CLASSES = "separate_classes"
 KINETICS_PATH = os.path.join(SEPERATE_CLASSES, KINETICS_CLASSES_CSV)
 DANCES_PATH_5 = os.path.join(SEPERATE_CLASSES, 'dances_5.csv')
@@ -78,3 +83,4 @@ def load_kinetics(kinetics_path=KINETICS_PATH):
         df = pd.read_csv(kinetics_path)
     dict_out = {idx: label for idx, label in enumerate(df.iloc[:, -1])}
     return dict_out
+

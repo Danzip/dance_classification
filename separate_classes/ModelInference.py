@@ -1,22 +1,14 @@
 import sys
 
-import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
-import seaborn as sns
 from io import StringIO
 import streamlit as st
 
 from separate_classes.VideoLoader import VideoLoader
-from utils import load_movinet_model, load_kinetics, KINETICS_PATH, get_label_map, DANCES_PATH_5, DANCES_PATH_18
-
-DANCE_CLASSES_18 = "18 dance classes"
-
-DANCE_CLASSES_5 = "5 dance classes"
-
-KINETICS_CLASSES_600 = "600 kinetics classes"
+from utils import load_movinet_model, KINETICS_PATH, get_label_map, DANCES_PATH_5, DANCES_PATH_18, \
+    DANCE_CLASSES_18, KINETICS_CLASSES, DANCE_CLASSES_5
 
 
 class ModelInference:
@@ -40,7 +32,7 @@ class ModelInference:
         self.load_model_print_logs(model_id)
         if label_granularity == KINETICS_CLASSES:
             self.classes_dict = get_label_map(kinetics_path, kinetics_path)
-        if label_granularity == DANCE_CLASSES:
+        if label_granularity == DANCE_CLASSES_5:
             self.classes_dict = get_label_map(DANCES_PATH_5, kinetics_path)
         if label_granularity == DANCE_CLASSES_18:
             self.classes_dict = get_label_map(DANCES_PATH_18, kinetics_path)

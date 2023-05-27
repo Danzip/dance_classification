@@ -11,6 +11,8 @@ import tempfile
 import seaborn as sns
 import os
 
+from utils import KINETICS_CLASSES, DANCE_CLASSES_5, DANCE_CLASSES_18
+
 plt.rcParams["figure.dpi"] = 200
 plt.rcParams.update({'font.size': 15})
 
@@ -23,7 +25,8 @@ st.header('Model hyperparams')
 # reset_buffer_every_n_seconds = st.number_input('Reset buffer every N seconds',value=3, step=1)
 # label_granularity = st.number_input('Select granularity',value=, step=1)
 
-label_granularity = st.radio('Select Classes amount', ["600 kinetics classes", "5 dance classes", "18 dance classes"],
+label_granularity = st.radio(f'Select Classes amount',
+                             [f"{KINETICS_CLASSES}", f"{DANCE_CLASSES_5}", f"{DANCE_CLASSES_18}"],
                              index=0)
 model_id = st.radio('Select model,a0 - a5', ["a0", "a1", "a2", "a3", "a4", "a5"], index=0)
 upload_bool = st.radio('Upload or read local video',
@@ -50,7 +53,7 @@ def run_inference():
         n_frames_skip = round(fps / 5)
         m = ModelInference(batch_size=batch_size, n_frames_skip=n_frames_skip,
                            reset_buffer_every_n_batches=reset_buffer_every_n_seconds,
-                           label_granularity=label_granularity)
+                           label_granularity=label_granularity, model_id=model_id)
         start = time.time()
         df_out = m.analyse_vid(video, int(fps), return_df=True, show_plot=False)
         end = time.time()
